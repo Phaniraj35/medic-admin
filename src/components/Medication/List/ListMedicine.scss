@@ -1,0 +1,18 @@
+.pagination-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.medicene-list-action-btn {
+    background-color: transparent;
+    border: transparent;
+
+    &.delete-btn {
+        color:red;
+    }
+
+    &.edit-btn {
+        color: gray;
+    }
+}
