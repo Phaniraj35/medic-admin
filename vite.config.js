@@ -10,9 +10,9 @@ export default defineConfig({
     setupFiles: './setupTests.js',
     css: false,
     coverage: {
-      include: ['src/components/**/*.{js,jsx}'],
+      include: ['src/components/**/*.{js,jsx}', 'src/api/*.js'],
       reporter: ['text', 'json', 'html'],
-      exclude: ['src/components/**/*.{constants,spec,test}.{js,jsx}'],
+      exclude: ['src/components/**/*.{constants,spec,test}.{js,jsx}', 'src.api/*.{test,spec}.js'],
       all: true,
       lines: 80,
       functions: 80,

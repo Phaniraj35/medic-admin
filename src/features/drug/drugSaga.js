@@ -8,7 +8,6 @@ export function* workDrugsFetch() {
     try {
         yield put(drugActions.getDrugSuccess(medicenes?.data))
     } catch(error) {
-        console.log(error)
         yield put(drugActions.getDrugsFailure(error))
     }
 }

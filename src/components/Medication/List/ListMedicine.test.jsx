@@ -7,15 +7,6 @@ import { rest } from "msw";
 import { setupServer } from "msw/node"
 import { BrowserRouter } from "react-router-dom";
 import userEvent from '@testing-library/user-event'
-import { renderWithRouter } from "../../../app/utils/renderWithRouter";
-
-// const mockedUsedNavigate = vi.fn();
-
-// vi.doMock('react-router-dom', async () => {
-//     const reactRouterDom = await vi.importActual('react-router-dom');
-
-//     return {...reactRouterDom, useNavigate: () => mockedUsedNavigate}
-// });
 
 export const handlers = [
     rest.get("http://localhost:3000/medicines", (req, res, ctx) => {
