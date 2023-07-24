@@ -1,7 +1,10 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, test, vi } from "vitest";
+import {render, screen, waitFor} from "@testing-library/react";
+import {afterAll, afterEach, beforeAll, describe, expect, test, vi} from "vitest";
 import MedicationForm from "./MedicationForm";
 import userEvent from '@testing-library/user-event';
+import {rest} from "msw";
+import {setupServer} from "msw/node";
+import {ToastContainer} from "react-toastify";
 
 const defaultFormValues = {
     "name": "Digene",
@@ -14,7 +17,29 @@ const defaultFormValues = {
     "id": "ee979acc-5e97-46a8-a486-99d6655e6cd0"
 }
 
+export const handlers = [
+    rest.post("http://localhost:3000/medicines", (req, res, ctx) => {
+        return res(ctx.status(201), ctx.json({}))
+    }),
+
+    rest.put("http://localhost:3000/medicines/ee979acc-5e97-46a8-a486-99d6655e6cd0", (req, res, ctx) => {
+        return res(ctx.status(200), ctx.json({}))
+    })
+]
+
+const server = setupServer(...handlers)
+
 describe('Medication Form', () => {
+    beforeAll(() => server.listen({onUnhandledRequest: 'warn'}))
+
+    afterEach(() => {
+        server.resetHandlers();
+        vi.clearAllMocks();
+        vi.resetAllMocks()
+    })
+
+    afterAll(() => server.close());
+
     test('should render properly with all the form fields', () => {
         
         render(<MedicationForm />)
@@ -37,7 +62,7 @@ describe('Medication Form', () => {
 
     })
 
-    test('should populate form with passed default values', () => { 
+    test('should populate form with passed default values', () => {
         
         render(<MedicationForm defaultValues={defaultFormValues}/>)
 
@@ -71,9 +96,7 @@ describe('Medication Form', () => {
 
     })
 
-    test('should throw required validation and submit is blocked', async () => { 
-        const mockedSubmitHandler = vi.fn();
-
+    test('should throw required validation and submit is blocked', async () => {
         render(<MedicationForm />)
 
         const user = userEvent.setup()
@@ -86,13 +109,18 @@ describe('Medication Form', () => {
 
         await user.click(submitBtn);
 
-        expect(mockedSubmitHandler).not.toHaveBeenCalledOnce()
-
         expect(screen.getByText(/frequency is required/i)).toBeInTheDocument()
         expect(screen.getByText(/dosage form is required/i)).toBeInTheDocument()
         expect(screen.getByText(/route is required/i)).toBeInTheDocument()
         expect(screen.getByText(/duration is required/i)).toBeInTheDocument()
         expect(screen.getByText(/strength is required/i)).toBeInTheDocument()
+
+        const strengthTextBox = screen.getByRole('textbox', {name: /strength/i})
+        await user.type(strengthTextBox, '10mg')
+        await user.clear(medicationNameTextbox)
+
+        expect(screen.getByText(/medication name is required/i)).toBeInTheDocument()
+        expect(screen.queryByText(/strength is required/i)).not.toBeInTheDocument()
 
     })
 
@@ -110,10 +138,13 @@ describe('Medication Form', () => {
         expect(mockedSubmitHandler).not.toHaveBeenCalledOnce()
      })
 
-    test('should be able to submit form for success', async () => { 
-        const mockedSubmitHandler = vi.fn();
-
-        render(<MedicationForm defaultValues={defaultFormValues} submitCallback={mockedSubmitHandler}/>)
+    test('should be able to submit form for success', async () => {
+        render(
+            <>
+                <ToastContainer />
+                <MedicationForm defaultValues={defaultFormValues} />
+            </>
+        )
 
         const user = userEvent.setup()
 
@@ -125,6 +156,77 @@ describe('Medication Form', () => {
 
         await user.click(submitBtn);
 
-        expect(mockedSubmitHandler).toHaveBeenCalledOnce()
+        expect(await screen.findByText(/successfully added medication/i)).toBeInTheDocument();
+    })
+
+    test('should be able to submit edit form for success', async () => {
+        render(
+            <>
+                <ToastContainer />
+                <MedicationForm defaultValues={defaultFormValues} submitMethod="put" />
+            </>
+        )
+
+        const user = userEvent.setup()
+
+        const medicationNameTextBox = screen.getByRole('textbox', {name: /name/i})
+
+        await user.type(medicationNameTextBox, 'dolo');
+
+        const submitBtn = screen.getByRole('button', {name: /submit/i});
+
+        await user.click(submitBtn);
+
+        expect(await screen.findByText(/successfully updated/i)).toBeInTheDocument();
+    })
+
+    test('should catch api failure on add-medication form', async () => {
+        server.use(rest.post("http://localhost:3000/medicines", (req, res, ctx) => {
+            return res.once(ctx.status(500), ctx.json({error: 'error'}))
+        }))
+
+        render(
+            <>
+                <ToastContainer />
+                <MedicationForm defaultValues={defaultFormValues}/>
+            </>
+        )
+
+        const user = userEvent.setup()
+
+        const medicationNameTextBox = screen.getByRole('textbox', {name: /name/i})
+
+        await user.type(medicationNameTextBox, '-dolo');
+
+        const submitBtn = screen.getByRole('button', {name: /submit/i});
+
+        await user.click(submitBtn);
+
+        expect(await screen.findByText(/Error! Something went wrong./i)).toBeInTheDocument();
+    })
+
+    test('should catch api failure in edit-medication form', async () => {
+        server.use(rest.put("http://localhost:3000/medicines/ee979acc-5e97-46a8-a486-99d6655e6cd0", (req, res, ctx) => {
+            return res.once(ctx.status(400), ctx.json({error: 'error'}))
+        }))
+
+        render(
+            <>
+                <ToastContainer />
+                <MedicationForm defaultValues={defaultFormValues} submitMethod="put"/>
+            </>
+        )
+
+        const user = userEvent.setup()
+
+        const medicationNameTextBox = screen.getByRole('textbox', {name: /strength/i})
+
+        await user.type(medicationNameTextBox, '250mg');
+
+        const submitBtn = screen.getByRole('button', {name: /submit/i});
+
+        await user.click(submitBtn);
+
+        expect(await screen.findByText(/Oops! Something went wrong./i)).toBeInTheDocument();
     })
 })

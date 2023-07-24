@@ -2,16 +2,20 @@ import { DevTool } from '@hookform/devtools';
 import { useEffect } from 'react'
 import { Button, Card, Col, Form, Row } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
+import {v4 as uuidv4} from "uuid";
+import {postDrugs, putDrug} from "../../../api/index.js";
+import {errorToast, successToast} from "../../../utils/toast.js";
 
 
 const MedicationForm = (
-    { defaultValues = {
+    {
+      defaultValues = {
       name: '', strength: '', dosage_form: '', frequency: '',
       duration: '', route: '',active: false
-    },
-    cardTitle = 'Add Medication', 
-    submitMethod = 'post', 
-    submitCallback = /* c8 ignore next 1 */ data => {}}
+     },
+      cardTitle = 'Add Medication',
+      submitMethod = 'post',
+    }
 ) => {
 
   
@@ -23,8 +27,26 @@ const MedicationForm = (
 
   const { errors, isDirty, isSubmitting, isSubmitSuccessful } = formState
 
-  const submitHandler = data => {
-    submitCallback(data);  
+  const submitHandler = async data => {
+
+    if (submitMethod === 'post') {
+      data.id = uuidv4();
+
+      try {
+        const response = await postDrugs(data);
+        response.status === 201 && successToast('Successfully added medication.')
+      } catch (e) {
+        errorToast('Error! Something went wrong.')
+      }
+
+    } else if (submitMethod === 'put') {
+      try {
+        const response = await putDrug(data?.id, data);
+        response.status === 200 && successToast('Successfully updated.')
+      } catch (e) {
+        errorToast('Oops! Something went wrong.')
+      }
+    }
   }
 
   useEffect(() => {
