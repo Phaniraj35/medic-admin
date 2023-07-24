@@ -12,6 +12,8 @@ const AddMedication = () => {
       
       const response = await postDrugs(data);
 
+      console.log(response);
+
       response.status === 201 ? toast.success('Successfully added medication.') : toast.error('Error! Something went wrong.')
   }, [])
 

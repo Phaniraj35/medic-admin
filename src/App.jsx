@@ -23,7 +23,7 @@ function App() {
               <Route path='edit-medication/:drugId' element={<EditMedication />} />
             </Route>
           </Routes>
-          <ToastContainer />
+          <ToastContainer autoClose={false} />
         </Suspense>
       </ErrorBoundary>
     </>

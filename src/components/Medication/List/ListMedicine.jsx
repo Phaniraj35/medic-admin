@@ -92,11 +92,11 @@ const ListMedicine = ({navigator = () => /* c8 ignore next 5 */{}}) => {
 
       { !isLoading && (
           <Card className='mt-4'>
-            <Card.Header><h5 style={{marginBottom: 0}}>Medication List</h5></Card.Header>
+            <Card.Header><h5 id='medication-list-heading' style={{marginBottom: 0}}>Medication List</h5></Card.Header>
     
             <Card.Body>
               
-              <Table striped bordered hover responsive>
+              <Table striped bordered hover responsive id="medication-list-table">
               <thead>
                 {table.getHeaderGroups().map(headerGroup => (
                   <tr key={headerGroup.id}>
@@ -112,7 +112,7 @@ const ListMedicine = ({navigator = () => /* c8 ignore next 5 */{}}) => {
               </thead>
               <tbody>
                 {table.getRowModel().rows.map(row => (
-                  <tr key={row.id}>
+                  <tr key={row.id} className='medication-row'>
                     {row.getVisibleCells().map(cell => (
                       <td key={cell.id}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}

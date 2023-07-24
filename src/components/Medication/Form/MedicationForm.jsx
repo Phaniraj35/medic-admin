@@ -34,6 +34,7 @@ const MedicationForm = (
   }, [isSubmitSuccessful, reset, submitMethod])
 
   return (
+    <>
     <div className='mt-4 mb-4'>
 
       <Card>
@@ -56,7 +57,7 @@ const MedicationForm = (
                   required: "Medication name is required."
                 })}/>
 
-              <Form.Control.Feedback type='invalid'>{errors?.name?.message}</Form.Control.Feedback>
+                {errors?.name?.message && <Form.Control.Feedback id='name-error' type='invalid'>{errors.name.message}</Form.Control.Feedback>}
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formMedicationStrength">
@@ -68,7 +69,7 @@ const MedicationForm = (
                 {...register('strength', {
                   required: "Strength is required."
                 })}/>
-                <Form.Control.Feedback type='invalid'>{errors?.strength?.message}</Form.Control.Feedback>
+                {errors?.strength?.message && <Form.Control.Feedback type='invalid'>{errors.strength.message}</Form.Control.Feedback>}
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formMedicationDosageForm">
@@ -84,7 +85,7 @@ const MedicationForm = (
                 <option value="Capsule">Capsule</option>
                 <option value="Tablet">Tablet</option>
               </Form.Select>
-              <Form.Control.Feedback type='invalid'>{errors?.dosage_form?.message}</Form.Control.Feedback>
+              {errors?.dosage_form?.message && <Form.Control.Feedback type='invalid'>{errors.dosage_form.message}</Form.Control.Feedback>}
             </Form.Group>
 
             <Form.Group className='mb-3' controlId='formMedicationFrequency'>
@@ -100,7 +101,7 @@ const MedicationForm = (
                 <option value="Twice a day">Twice a day</option>
                 <option value="Thrice a day">Thrice a day</option>
               </Form.Select>
-              <Form.Control.Feedback type='invalid'>{errors?.frequency?.message}</Form.Control.Feedback>
+              {errors?.frequency?.message && <Form.Control.Feedback type='invalid'>{errors.frequency.message}</Form.Control.Feedback>}
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formMedicationDuration">
@@ -112,7 +113,7 @@ const MedicationForm = (
                 {...register('duration', {
                   required: "Duration is required"
                 })}/>
-                <Form.Control.Feedback type='invalid'>{errors?.duration?.message}</Form.Control.Feedback>
+                {errors?.duration?.message && <Form.Control.Feedback type='invalid'>{errors.duration.message}</Form.Control.Feedback>}
             </Form.Group>
 
             <Form.Group className='mb-3' controlId='formMedicationRoute'>
@@ -128,7 +129,7 @@ const MedicationForm = (
                 <option value="External Use">External use</option>
                 <option value="Injection">Injection</option>
               </Form.Select>
-              <Form.Control.Feedback type='invalid'>{errors?.route?.message}</Form.Control.Feedback>
+              {errors?.route?.message && <Form.Control.Feedback type='invalid'>{errors.route.message}</Form.Control.Feedback>}
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formActive">
@@ -148,6 +149,7 @@ const MedicationForm = (
       </Card>
       <DevTool control={control} />
     </div>
+    </>
   )
 }
 
