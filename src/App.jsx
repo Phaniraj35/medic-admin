@@ -19,7 +19,7 @@ function App() {
           <Routes>
             <Route path='/' element={<Wrapper />} >
               <Route path='add-medication' element={<AddMedication />} />
-              <Route index path='medications-list' element={<ListMedicine navigator={navigate} />} />
+              <Route index element={<ListMedicine navigator={navigate} />} />
               <Route path='edit-medication/:drugId' element={<EditMedication />} />
             </Route>
           </Routes>
