@@ -15,7 +15,7 @@ const Wrapper = () => {
                 </Navbar.Brand>
 
                 <Nav className="me-auto" activeKey={location.pathname}>
-                    <Nav.Link as={Link} to="/medications-list">Medication List</Nav.Link>
+                    <Nav.Link as={Link} to="/">Medication List</Nav.Link>
                     <Nav.Link as={Link} to="/add-medication">Add Medication</Nav.Link>
                 </Nav>
             </Container>
