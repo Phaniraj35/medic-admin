@@ -9,8 +9,7 @@
 - Run WDIO tests by using `yarn wdio`
 
 ### Screenshots
-
-- List Page ![Screenshot 2023-07-25 at 8.56.27 PM.png](..%2F..%2F..%2FDesktop%2FScreenshot%202023-07-25%20at%208.56.27%20PM.png)
-- Add Medication Page ![Screenshot 2023-07-25 at 8.58.24 PM.png](..%2F..%2F..%2FDesktop%2FScreenshot%202023-07-25%20at%208.58.24%20PM.png)
-- Add Medication With Validation ![Screenshot 2023-07-25 at 9.00.40 PM.png](..%2F..%2F..%2FDesktop%2FScreenshot%202023-07-25%20at%209.00.40%20PM.png)
-- Edit Medication Screen ![Screenshot 2023-07-25 at 9.01.24 PM.png](..%2F..%2F..%2FDesktop%2FScreenshot%202023-07-25%20at%209.01.24%20PM.png)
+- List Page <img width="1725" alt="Screenshot 2023-07-25 at 8 56 27 PM" src="https://github.com/Phaniraj35/medic-admin/assets/8973538/37912848-9109-4890-9a31-c90e535590f3">
+- Add Medication Page <img width="1727" alt="Screenshot 2023-07-25 at 8 58 24 PM" src="https://github.com/Phaniraj35/medic-admin/assets/8973538/e16edadb-4a47-4b4c-8397-8457caec86c5">
+- Add Medication With Validation <img width="1723" alt="Screenshot 2023-07-25 at 9 00 40 PM" src="https://github.com/Phaniraj35/medic-admin/assets/8973538/d35ae5f8-17ea-4b1d-b5b4-3ed853dd4378">
+- Edit Medication Screen <img width="1726" alt="Screenshot 2023-07-25 at 9 01 24 PM" src="https://github.com/Phaniraj35/medic-admin/assets/8973538/94a12a4e-d63f-41e8-811e-8fcd7de690fc">
