@@ -3,10 +3,9 @@ import { drugActions } from "./drugSlice";
 import { fetchDrugs } from "../../api";
 
 export function* workDrugsFetch() {
-    const medicenes = yield call(fetchDrugs);
-        
     try {
-        yield put(drugActions.getDrugSuccess(medicenes?.data))
+        const medicines = yield call(fetchDrugs);
+        yield put(drugActions.getDrugSuccess(medicines?.data))
     } catch(error) {
         yield put(drugActions.getDrugsFailure(error))
     }

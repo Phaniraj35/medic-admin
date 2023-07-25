@@ -17,11 +17,7 @@ describe("Drugs Saga", () => {
         // we can assert dispatched actions to verify the working of saga
         const dispatchedActions = []
 
-        // vi.mock('../../api', () => ({
-        //     fetchDrugs: vi.fn(() => Promise.resolve({data: [{name: 'Dolo',strength: '650mg'}]}))
-        // }))
-        api.fetchDrugs = vi.fn(
-            () => Promise.resolve({data: [{name: 'Dolo',strength: '650mg'}]})
+        api.fetchDrugs = vi.fn(() => Promise.resolve({data: [{name: 'Dolo',strength: '650mg'}]})
         )
 
         await runSaga({
@@ -35,21 +31,22 @@ describe("Drugs Saga", () => {
         })
     })
 
-    test('should store error on API fail', async () => { 
+    test('should store error on API fail', async () => {
 
-        const error = { error: 'something is broken' };
+        // we can assert dispatched actions to verify the working of saga
+        const dispatchedActions = []
 
-        const gen = workDrugsFetch();
+        const apiError = new Error('error')
+        api.fetchDrugs = vi.fn(() => Promise.reject(apiError))
 
-        gen.next() // saga call 
-        gen.next() //saga put
+        await runSaga({
+            dispatch: action => dispatchedActions.push(action),
+            getState: () => {}
+        },workDrugsFetch).toPromise();
 
-        expect(gen.throw(error).value).toEqual(put({ type: 'drugs/getDrugsFailure', payload: error }));
-
-        // assert.deepEqual(
-        //     gen.throw(error).value,
-        //     put({ type: 'drugs/getDrugsFailure', payload: error }),
-        //     'throws error on api failure'
-        // )
-     })
+        expect(dispatchedActions).toContainEqual({
+            type: 'drugs/getDrugsFailure',
+            payload: apiError
+        })
+    })
 })
