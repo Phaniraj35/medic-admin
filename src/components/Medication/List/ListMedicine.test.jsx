@@ -8,6 +8,18 @@ import { setupServer } from "msw/node"
 import { BrowserRouter } from "react-router-dom";
 import userEvent from '@testing-library/user-event'
 
+const responseArray = new Array(15);
+
+responseArray.fill({
+    "id": 1,
+    "name": "Dolo 650",
+    "strength": "650mg",
+    "dosage_form": "tablet",
+    "frequency": "2",
+    "duration": "3",
+    "route": "oral"
+})
+
 export const handlers = [
     rest.get("http://localhost:3000/medicines", (req, res, ctx) => {
         return res(ctx.json([{
@@ -95,4 +107,65 @@ describe('List Medicene', () => {
 
         expect(mockedNavigator).toHaveBeenCalledOnce();
      })
+
+    test('should verify next & prev buttons to be disabled when rows are less than 10', async () => {
+        render(<Provider store={store}>
+            <BrowserRouter>
+                <ListMedicine />
+            </BrowserRouter>
+        </Provider>)
+
+        // asserts hiding of the loading indicator
+        await waitForElementToBeRemoved(() => screen.getByText(/loading/i));
+
+        expect(await screen.findByText(/dolo 650/i)).toBeInTheDocument();
+
+        expect(screen.getByRole('button', { name: /prev/i})).toBeDisabled()
+
+        expect(screen.getByRole('button', { name: /next/i})).toBeDisabled()
+    })
+
+    test('when rows > 10 next & prev buttons are clickable', async () => {
+        server.use(
+            rest.get("http://localhost:3000/medicines", (req, res, ctx) => {
+                return res.once(ctx.json(responseArray))
+            })
+        )
+
+        render(<Provider store={store}>
+            <BrowserRouter>
+                <ListMedicine />
+            </BrowserRouter>
+        </Provider>)
+
+        const user = userEvent.setup()
+
+        await waitForElementToBeRemoved(() => screen.getByText(/loading/i));
+
+        const prevButton = screen.getByRole('button', { name: /prev/i});
+
+        const nextButton = screen.getByRole('button', { name: /next/i});
+
+        expect(prevButton).toBeDisabled()
+        expect(nextButton).not.toBeDisabled()
+
+        await user.click(nextButton);
+
+        /*
+            since our test api returns only two pages, clicking the `next` button above should
+            disable the `next` button & enable the `prev` button
+        */
+        expect(prevButton).not.toBeDisabled()
+        expect(nextButton).toBeDisabled();
+
+        await user.click(prevButton);
+
+        /*
+            verifying the logic one more time. since our test api returns only two pages,
+            clicking the `prev` button above should
+            disable the `prev` button & enable the `next` button
+        */
+        expect(nextButton).not.toBeDisabled()
+        expect(prevButton).toBeDisabled()
+    })
 })

@@ -1,13 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { drugActions } from '../../../features/drug/drugSlice';
 import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
-import { Card, Pagination, Table } from 'react-bootstrap';
+import {Button, ButtonGroup, Card, Table} from 'react-bootstrap';
 import { FaEdit, FaTrash} from "react-icons/fa"
 import './ListMedicine.scss';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { deleteDrug } from '../../../api';
-import { toast } from 'react-toastify';
-
 
 const ListMedicine = ({navigator = () => /* c8 ignore next 5 */{}}) => {
  
@@ -119,21 +116,33 @@ const ListMedicine = ({navigator = () => /* c8 ignore next 5 */{}}) => {
               </tbody>
             </Table>
       
-            <div className='pagination-container'>
-              <Pagination>
-                
-                <Pagination.First onClick={/* c8 ignore next 1*/() => table.setPageIndex(0)} />
-                <Pagination.Prev 
-                  onClick={/* c8 ignore next 1*/ () => table.previousPage()}
-                  disabled={/* c8 ignore next 1*/ !table.getCanPreviousPage()}
-                />
-                <Pagination.Next 
-                  onClick={/* c8 ignore next 1*/ () => table.nextPage()}
-                  disabled={/* c8 ignore next 1*/ !table.getCanNextPage()}
-                />
-                <Pagination.Last onClick={/* c8 ignore next 1*/ () => table.setPageIndex(table.getPageCount() - 1)} />
-      
-              </Pagination>
+            <div className='pagination-container mt-3'>
+                <div>
+                    <ButtonGroup aria-label="First group">
+                        <Button
+                            onClick={/* c8 ignore next 1*/() => table.setPageIndex(0)}
+                            variant="outline-secondary"
+                        >First</Button>{' '}
+
+                        <Button
+                            onClick={() => table.previousPage()}
+                            disabled={!table.getCanPreviousPage()}
+                            variant="outline-secondary"
+                        >Prev</Button>{' '}
+
+                        <Button
+                            onClick={() => table.nextPage()}
+                            disabled={!table.getCanNextPage()}
+                            variant="outline-secondary"
+                        >Next</Button>{' '}
+
+                        <Button
+                            onClick={() => /* c8 ignore next 1*/ () => table.setPageIndex(table.getPageCount() - 1)}
+                            variant="outline-secondary"
+                        >Last</Button>
+                    </ButtonGroup>
+                </div>
+
             </div>
       
             </Card.Body>
