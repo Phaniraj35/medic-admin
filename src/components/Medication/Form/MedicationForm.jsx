@@ -5,6 +5,8 @@ import { useForm } from 'react-hook-form'
 import {v4 as uuidv4} from "uuid";
 import {postDrugs, putDrug} from "../../../api/index.js";
 import {errorToast, successToast} from "../../../utils/toast.js";
+import {useAppDispatch} from "../../../app/hooks.js";
+import {drugActions} from "../../../features/drug/drugSlice.js";
 
 
 const MedicationForm = (
@@ -17,7 +19,7 @@ const MedicationForm = (
       submitMethod = 'post',
     }
 ) => {
-
+  const dispatch = useAppDispatch();
   
   const form = useForm({
     defaultValues: defaultValues
@@ -31,21 +33,10 @@ const MedicationForm = (
 
     if (submitMethod === 'post') {
       data.id = uuidv4();
-
-      try {
-        const response = await postDrugs(data);
-        response.status === 201 && successToast('Successfully added medication.')
-      } catch (e) {
-        errorToast('Error! Something went wrong.')
-      }
+      dispatch(drugActions.addNewDrug(data));
 
     } else if (submitMethod === 'put') {
-      try {
-        const response = await putDrug(data?.id, data);
-        response.status === 200 && successToast('Successfully updated.')
-      } catch (e) {
-        errorToast('Oops! Something went wrong.')
-      }
+      dispatch(drugActions.updateDrug(data));
     }
   }
 

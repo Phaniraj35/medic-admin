@@ -7,11 +7,15 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, test } from "vitest";
 import AddMedication from "./AddMedication";
+import {Provider} from "react-redux";
+import store from "../../../app/store.js";
 
 describe('AddMedication', () => {
 
     test('should render properly', () => { 
-        render(<AddMedication />)
+        render(<Provider store={store}>
+            <AddMedication />
+        </Provider>)
 
         expect(screen.getByText(/add medication/i)).toBeInTheDocument()
      })

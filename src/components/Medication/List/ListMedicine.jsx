@@ -7,7 +7,6 @@ import './ListMedicine.scss';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { deleteDrug } from '../../../api';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
 
 
 const ListMedicine = ({navigator = () => /* c8 ignore next 5 */{}}) => {
@@ -28,11 +27,8 @@ const ListMedicine = ({navigator = () => /* c8 ignore next 5 */{}}) => {
 
       /* c8 ignore next 7*/
       if (window.confirm("Do you really want to delete?")) {
-        const response = await deleteDrug(drugId);
-
-        setCount(cnt => cnt + 1) //force update table
-
-        response.status == 200 ? toast.success('Successfully deleted') : toast.error('Oops! Something went wrong')
+          dispatch(drugActions.deleteDrug(drugId));
+          setCount(cnt => cnt + 1) //force update table
       }
 
     }

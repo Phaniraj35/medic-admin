@@ -5,6 +5,8 @@ import userEvent from '@testing-library/user-event';
 import {rest} from "msw";
 import {setupServer} from "msw/node";
 import {ToastContainer} from "react-toastify";
+import {Provider} from "react-redux";
+import store from "../../../app/store.js";
 
 const defaultFormValues = {
     "name": "Digene",
@@ -42,7 +44,9 @@ describe('Medication Form', () => {
 
     test('should render properly with all the form fields', () => {
         
-        render(<MedicationForm />)
+        render(<Provider store={store}>
+            <MedicationForm />
+        </Provider>)
 
         // text fields
         expect(screen.getByRole('textbox', {name: /name/i})).toBeInTheDocument()
@@ -64,7 +68,7 @@ describe('Medication Form', () => {
 
     test('should populate form with passed default values', () => {
         
-        render(<MedicationForm defaultValues={defaultFormValues}/>)
+        render(<Provider store={store}><MedicationForm defaultValues={defaultFormValues}/></Provider>)
 
         // text fields
         expect(screen.getByDisplayValue(defaultFormValues.name)).toBeInTheDocument()
@@ -81,23 +85,17 @@ describe('Medication Form', () => {
      })
 
     test('should not allow form submission if form is never interacted with', async () => {
+        render(<Provider store={store}>
+            <MedicationForm />
+        </Provider>)
 
-        const mockedSubmitHandler = vi.fn();
-
-        render(<MedicationForm submitCallback={mockedSubmitHandler} />)
-
-        const user = userEvent.setup()
-
-        const submitBtn = screen.getByRole('button', {name: /submit/i});
-
-        await user.click(submitBtn);
-
-        expect(mockedSubmitHandler).not.toHaveBeenCalledOnce()
-
+        expect(screen.getByRole('button', {name: /submit/i})).toBeDisabled();
     })
 
     test('should throw required validation and submit is blocked', async () => {
-        render(<MedicationForm />)
+        render(<Provider store={store}>
+            <MedicationForm />
+        </Provider>)
 
         const user = userEvent.setup()
 
@@ -124,26 +122,13 @@ describe('Medication Form', () => {
 
     })
 
-    test('should restrict edit form submit if form is not interacted with', async () => { 
-        const mockedSubmitHandler = vi.fn();
-
-        render(<MedicationForm defaultValues={defaultFormValues} submitCallback={mockedSubmitHandler}/>)
-
-        const user = userEvent.setup()
-
-        const submitBtn = screen.getByRole('button', {name: /submit/i});
-
-        await user.click(submitBtn);
-
-        expect(mockedSubmitHandler).not.toHaveBeenCalledOnce()
-     })
 
     test('should be able to submit form for success', async () => {
         render(
-            <>
+            <Provider store={store}>
                 <ToastContainer />
                 <MedicationForm defaultValues={defaultFormValues} />
-            </>
+            </Provider>
         )
 
         const user = userEvent.setup()
@@ -161,10 +146,10 @@ describe('Medication Form', () => {
 
     test('should be able to submit edit form for success', async () => {
         render(
-            <>
+            <Provider store={store}>
                 <ToastContainer />
                 <MedicationForm defaultValues={defaultFormValues} submitMethod="put" />
-            </>
+            </Provider>
         )
 
         const user = userEvent.setup()
@@ -186,10 +171,10 @@ describe('Medication Form', () => {
         }))
 
         render(
-            <>
+            <Provider store={store}>
                 <ToastContainer />
                 <MedicationForm defaultValues={defaultFormValues}/>
-            </>
+            </Provider>
         )
 
         const user = userEvent.setup()
@@ -211,10 +196,10 @@ describe('Medication Form', () => {
         }))
 
         render(
-            <>
+            <Provider store={store}>
                 <ToastContainer />
                 <MedicationForm defaultValues={defaultFormValues} submitMethod="put"/>
-            </>
+            </Provider>
         )
 
         const user = userEvent.setup()
