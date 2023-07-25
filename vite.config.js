@@ -12,9 +12,12 @@ export default defineConfig({
     css: false,
     exclude: [...configDefaults.exclude, 'e2e'],
     coverage: {
-      include: ['src/components/**/*.{js,jsx}', 'src/api/*.js'],
+      include: ['src/components/**/*.{js,jsx}', 'src/api/*.js', 'src/features/drug/**/*.{js,jsx}'],
       reporter: ['text', 'json', 'html'],
-      exclude: ['src/components/**/*.{constants,spec,e2e}.{js,jsx}', 'src.api/*.{e2e,spec}.js'],
+      exclude: [
+          'src/components/**/*.{constants,spec,e2e}.{js,jsx}', 'src.api/*.{e2e,spec}.js',
+          'src/features/drug/drugSlice.js', 'src/features/**/*.{test,spec,e2e}.{js,jsx}'
+      ],
       all: true,
       lines: 80,
       functions: 80,
