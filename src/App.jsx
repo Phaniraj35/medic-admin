@@ -21,6 +21,7 @@ function App() {
               <Route path='add-medication' element={<AddMedication />} />
               <Route index element={<ListMedicine navigator={navigate} />} />
               <Route path='edit-medication/:drugId' element={<EditMedication />} />
+              <Route path='*' id="not-found-msg" element={<h3 className="mt-4 justify-content-center align-items-center">Page Not Found</h3>} />
             </Route>
           </Routes>
           <ToastContainer autoClose={false} />
